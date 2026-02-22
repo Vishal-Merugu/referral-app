@@ -1,0 +1,10 @@
+---
+description: Use only Google Gemini for any AI/LLM features in this repo
+alwaysApply: true
+---
+
+# AI / LLM: Gemini only
+
+- For any AI or LLM features in this codebase, use **only Google Gemini** (e.g. `@google/generative-ai`, Gemini API).
+- Do **not** add or use OpenAI, Anthropic, or other LLM providers.
+- Store the Gemini API key in environment variables (e.g. `GEMINI_API_KEY`), never in source.

@@ -1,0 +1,49 @@
+
+> server@1.0.0 dev
+> nodemon src/index.ts
+
+[33m[nodemon] 3.1.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: ts,json[39m
+[32m[nodemon] starting `ts-node src/index.ts`[39m
+[dotenv@17.2.3] injecting env (3) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+🚀 Server running on http://localhost:4000
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node src/index.ts`[39m
+[dotenv@17.2.3] injecting env (3) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+🚀 Server running on http://localhost:4000
+Signup error: PrismaClientKnownRequestError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/vishal/Documents/Repos/referral-app/server/src/controllers/authController.ts:12:40
+
+   9 const { email, password, firstName, lastName, role } = req.body;
+  10 
+  11 // Check if user exists
+→ 12 const existing = await prisma.user.findUnique(
+Database `vishal` does not exist on the database server
+    at Vr.handleRequestError (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client/src/runtime/RequestHandler.ts:228:13)
+    at Vr.handleAndLogRequestError (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)
+    at Vr.request (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async a (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:805:24)
+    at async signup (/Users/vishal/Documents/Repos/referral-app/server/src/controllers/authController.ts:12:22) {
+  code: 'P1003',
+  meta: {
+    modelName: 'User',
+    driverAdapterError: DriverAdapterError: DatabaseDoesNotExist
+        at PrismaPgAdapter.onError (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/adapter-pg/dist/index.js:687:11)
+        at PrismaPgAdapter.performIO (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/adapter-pg/dist/index.js:682:12)
+        at processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at async PrismaPgAdapter.queryRaw (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/adapter-pg/dist/index.js:602:30)
+        at async e.interpretNode (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:182:26)
+        at async e.interpretNode (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:209:41)
+        at async e.interpretNode (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:268:41)
+        at async e.run (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client-engine-runtime/src/interpreter/query-interpreter.ts:93:23)
+        at async execute (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:81:12)
+        at async Dt.request (/Users/vishal/Documents/Repos/referral-app/server/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:461:22) {
+      cause: [Object]
+    }
+  },
+  clientVersion: '7.3.0'
+}

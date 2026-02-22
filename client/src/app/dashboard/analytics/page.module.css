@@ -1,0 +1,321 @@
+.loaderPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 16rem; /* 64 */
+}
+
+.loaderIcon {
+  width: 2rem;
+  height: 2rem;
+  animation: spin 1s linear infinite;
+  color: var(--primary);
+}
+
+.seekerContainer {
+  padding: 1rem;
+  max-width: 48rem; /* 3xl */
+  margin: 0 auto;
+}
+@media (min-width: 640px) {
+  .seekerContainer {
+    padding: 1.25rem;
+  }
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--foreground);
+  letter-spacing: -0.025em;
+  margin-bottom: 0.25rem;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+}
+
+.seekerCard {
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 1px 3px var(--shadow-border),
+    0 0 0 1px var(--shadow-border-subtle);
+  background-color: var(--surface);
+  padding: 2rem;
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.seekerIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--primary);
+  margin: 0 auto 0.75rem auto;
+}
+
+.seekerTitle {
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
+}
+
+.seekerDesc {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+}
+
+/* EMPLOYEE VIEW */
+.empContainer {
+  padding: 1.25rem;
+  max-width: 72rem; /* 6xl */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .empContainer {
+    padding: 1.75rem;
+  }
+}
+
+.headerBox {
+  margin-bottom: 1.5rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.statCard {
+  padding: 1rem;
+}
+.statContent {
+  padding: 0;
+}
+
+.statIconBox {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+  margin-top: 0.125rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 1.25rem;
+}
+
+.emptyCard {
+  text-align: center;
+  padding: 4rem 0;
+  border-style: dashed;
+}
+
+.emptyIcon {
+  width: 3rem;
+  height: 3rem;
+  color: var(--foreground-subtle);
+  margin: 0 auto 0.75rem auto;
+}
+
+.emptyText {
+  color: var(--foreground-muted);
+}
+
+.postList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.postCard {
+  padding: 1.25rem;
+}
+.postCardContent {
+  padding: 0;
+}
+
+.postHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.postTitleBox {
+  flex: 1;
+}
+
+.postTitle {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.postMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.postDate {
+  font-size: 0.75rem;
+  color: var(--foreground-subtle);
+}
+
+.conversionBox {
+  text-align: right;
+}
+
+.convRate {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.convLabel {
+  font-size: 0.75rem;
+  color: var(--foreground-subtle);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.metricItem {
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: var(--radius-xl);
+  background-color: var(--surface-raised);
+}
+
+.metricValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.metricLabel {
+  font-size: 0.75rem;
+  color: var(--foreground-subtle);
+  margin-top: 0.125rem;
+}
+
+.funnelBox {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.funnelTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--foreground-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-bottom: 0.5rem;
+}
+
+.funnelStages {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.funnelStageItem {
+  flex: 1;
+  text-align: center;
+}
+
+.barTrack {
+  height: 0.375rem;
+  border-radius: 9999px;
+  background-color: var(--border);
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 9999px;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.stageLabel {
+  font-size: 0.625rem;
+  color: var(--foreground-subtle);
+}
+
+.stageCount {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+/* Dynamic Colors */
+.bgPrimary {
+  background-color: rgba(var(--primary-rgb), 0.1);
+}
+.bgAccent {
+  background-color: rgba(var(--accent-rgb), 0.1);
+}
+.bgSecondary {
+  background-color: rgba(var(--secondary-rgb), 0.1);
+}
+.bgWarning {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+.bgSuccess {
+  background-color: rgba(var(--success-rgb), 0.1);
+}
+
+.textPrimary {
+  color: var(--primary);
+}
+.textAccent {
+  color: var(--accent);
+}
+.textSecondary {
+  color: var(--secondary);
+}
+.textWarning {
+  color: #f59e0b;
+}
+.textSuccess {
+  color: var(--success);
+}

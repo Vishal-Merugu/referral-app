@@ -1,0 +1,61 @@
+.card {
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+/* Variants */
+.default {
+  background-color: var(--surface);
+  box-shadow:
+    0 1px 3px var(--shadow-border),
+    0 0 0 1px var(--shadow-border-subtle);
+}
+
+.raised {
+  background-color: var(--surface-raised);
+  box-shadow:
+    0 1px 3px var(--shadow-border),
+    0 0 0 1px var(--shadow-border-subtle);
+}
+
+.ghost {
+  background-color: transparent;
+  border: none;
+}
+
+/* Sub-components */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem;
+  padding-bottom: 0.75rem;
+}
+
+.title {
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--foreground-subtle);
+  line-height: 1.375;
+  margin: 0;
+}
+
+.content {
+  padding: 1.25rem;
+  padding-top: 0;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;
+  padding-top: 0;
+}

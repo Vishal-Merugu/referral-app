@@ -1,0 +1,367 @@
+.container {
+  padding: 1rem;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (min-width: 640px) {
+  .container {
+    padding: 1.25rem;
+  }
+}
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--foreground);
+  letter-spacing: -0.025em;
+}
+
+.subText {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  margin-top: 0.25rem;
+}
+
+.newPostBtn {
+  box-shadow: 0 4px 14px 0 rgba(var(--primary-rgb), 0.39);
+  gap: 0.375rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+@media (min-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.statCard {
+  border-radius: var(--radius-xl);
+  padding: 1rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.statCard:hover {
+  border-color: rgba(var(--primary-rgb), 0.2);
+  transform: translateY(-2px);
+}
+
+.statIconBox {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  transition: transform 0.2s;
+}
+.statCard:hover .statIconBox {
+  transform: scale(1.1);
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--foreground-subtle);
+  margin-top: 0.125rem;
+}
+
+.colorViolet {
+  color: #8b5cf6;
+}
+.bgViolet {
+  background-color: rgba(139, 92, 246, 0.1);
+}
+.colorCyan {
+  color: #06b6d4;
+}
+.bgCyan {
+  background-color: rgba(6, 182, 212, 0.1);
+}
+.colorAmber {
+  color: #f59e0b;
+}
+.bgAmber {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+.colorEmerald {
+  color: #10b981;
+}
+.bgEmerald {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+/* Main Content Grid */
+.contentGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+@media (min-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.activityColumn {
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .activityColumn {
+    grid-column: span 2 / span 2;
+  }
+}
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  font-weight: 700;
+  color: var(--foreground);
+  font-size: 0.875rem;
+}
+
+.viewAllBtn {
+  color: var(--primary);
+  gap: 0.25rem;
+}
+
+.emptyStateCard {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border-radius: var(--radius-2xl);
+  border: 1px dashed var(--border-strong);
+  background-color: var(--surface);
+}
+
+.emptyStateIconBox {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    oklch(0.6 0.25 250) 50%,
+    var(--accent) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  box-shadow: 0 4px 14px 0 rgba(var(--primary-rgb), 0.39);
+}
+
+.emptyStateTitle {
+  font-weight: 600;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.emptyStateDesc {
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+  margin-bottom: 1.25rem;
+}
+
+.emptyStateBtn {
+  box-shadow: 0 4px 14px 0 rgba(var(--primary-rgb), 0.39);
+  gap: 0.375rem;
+}
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.listItemCard {
+  padding: 1rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: all 0.2s;
+}
+.listItemCard:hover {
+  border-color: rgba(var(--primary-rgb), 0.25);
+}
+
+.listItemIconBox {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    oklch(0.6 0.25 250) 50%,
+    var(--accent) 100%
+  );
+  box-shadow: 0 4px 14px 0 rgba(var(--primary-rgb), 0.39);
+}
+
+.listItemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.listItemTitle {
+  font-weight: 600;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listItemDesc {
+  font-size: 0.75rem;
+  color: var(--foreground-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listItemBadge {
+  font-size: 0.625rem;
+  flex-shrink: 0;
+}
+
+.quickActionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.quickActionCard {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  padding: 0.75rem 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.quickActionCard:hover {
+  border-color: rgba(var(--primary-rgb), 0.3);
+  transform: translateY(-2px);
+}
+
+.quickActionIconBox {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.quickActionCard:hover .quickActionIconBox {
+  transform: scale(1.1);
+}
+
+.quickActionContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.quickActionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.quickActionDesc {
+  font-size: 0.75rem;
+  color: var(--foreground-subtle);
+}
+
+.quickActionChevron {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--foreground-subtle);
+  transition: color 0.2s;
+}
+.quickActionCard:hover .quickActionChevron {
+  color: var(--primary);
+}
+
+.loaderOverlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16rem;
+}
+
+.loaderBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loaderIconBox {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sparklesPulse {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #ffffff;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.loaderSpinner {
+  width: 1rem;
+  height: 1rem;
+  color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

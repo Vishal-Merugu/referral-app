@@ -1,0 +1,206 @@
+.page {
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.loaderPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background);
+}
+
+.loaderIcon {
+  width: 2rem;
+  height: 2rem;
+  animation: spin 1s linear infinite;
+  color: var(--primary);
+}
+
+.nav {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.navInner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.navIconBox {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-xl);
+  background-color: var(--destructive);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navTitle {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.badgeDestructive {
+  margin-left: 0.5rem;
+}
+
+.mainContent {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  padding: 1.25rem;
+}
+
+.statCardContent {
+  padding: 0;
+}
+
+.statValue {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  margin-top: 0.25rem;
+}
+
+.tabsList {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  width: fit-content;
+}
+
+.cardHeader {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.cardHeaderFlex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.searchWrap {
+  position: relative;
+  width: 16rem;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--foreground-subtle);
+}
+
+.searchInput {
+  padding-left: 2.25rem;
+}
+
+.cardContent {
+  padding: 0;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.tableHeaderRow {
+  border-bottom: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+.tableHeaderCell {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--foreground-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.tableRow {
+  border-bottom: 1px solid rgba(var(--border-rgb), 0.5);
+  transition: background-color 0.2s;
+}
+.tableRow:hover {
+  background-color: var(--surface-hover);
+}
+
+.tableCell {
+  padding: 0.75rem 1rem;
+}
+
+.userName {
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.userEmail {
+  font-size: 0.75rem;
+  color: var(--foreground-subtle);
+}
+
+.userText {
+  color: var(--foreground-muted);
+  font-size: 0.75rem;
+}
+
+.actionFlex {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.iconSm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.iconXs {
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-right: 0.25rem;
+}
+
+.textWhite {
+  color: #fff;
+}

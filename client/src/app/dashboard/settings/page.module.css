@@ -1,0 +1,232 @@
+.loaderPage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 16rem; /* 64 */
+}
+
+.loaderIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  animation: spin 1s linear infinite;
+  color: var(--primary);
+}
+
+.pageContainer {
+  max-width: 42rem; /* 2xl */
+  margin: 0 auto;
+  padding: 1.25rem;
+  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 640px) {
+  .pageContainer {
+    padding: 2rem;
+  }
+}
+
+.headerArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--foreground);
+  letter-spacing: -0.025em;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  margin-top: 0.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+}
+
+.sectionIconBox {
+  width: 1.75rem; /* 7 */
+  height: 1.75rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sectionIcon {
+  width: 0.875rem; /* 3.5 */
+  height: 0.875rem;
+  color: #fff;
+}
+
+.sectionTitle {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.themeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.themeOption {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 1rem;
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--border);
+  background-color: var(--surface-raised);
+  transition: all 0.2s;
+}
+.themeOption:hover {
+  border-color: var(--border-strong);
+}
+
+.themeOptionActive {
+  border-color: var(--primary);
+  background-color: rgba(var(--primary-rgb), 0.05); /* bg-primary/5 */
+}
+.themeOptionActive:hover {
+  border-color: var(--primary); /* Maintain active border color on hover */
+}
+
+.themeIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--foreground-muted);
+}
+.themeIconActive {
+  color: var(--primary);
+}
+
+.themeLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground-muted);
+}
+.themeLabelActive {
+  color: var(--primary);
+}
+
+.themeCheckmark {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkIcon {
+  width: 0.625rem; /* 2.5 */
+  height: 0.625rem;
+  color: #fff;
+}
+
+.listGroup {
+  border-radius: var(--radius-xl);
+  box-shadow: 0 0 0 1px var(--shadow-border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.listGroup > div:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+  background-color: var(--surface);
+  transition: background-color 0.2s;
+}
+.listItem:hover {
+  background-color: var(--surface-hover);
+}
+
+.itemLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.itemDesc {
+  font-size: 0.75rem;
+  color: var(--foreground-subtle);
+  margin-top: 0.125rem;
+}
+
+.accountItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+  background-color: var(--surface);
+}
+
+.accountKey {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+}
+
+.accountValue {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+/* Toggle Component Styles */
+.toggleBtn {
+  position: relative;
+  width: 2.5rem; /* 10 */
+  height: 22px;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+.toggleBtnOn {
+  background-color: var(--primary);
+}
+.toggleBtnOff {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+:global(.dark) .toggleBtnOff {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  width: 1rem; /* 4 */
+  height: 1rem;
+  border-radius: 9999px;
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  transition: transform 0.2s;
+}
+.toggleKnobOn {
+  transform: translateX(22px);
+}
+.toggleKnobOff {
+  transform: translateX(3px);
+}

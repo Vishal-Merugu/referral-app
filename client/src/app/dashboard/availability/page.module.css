@@ -1,0 +1,287 @@
+.loaderPage {
+  display: flex;
+  justify-content: center;
+  padding: 5rem 0; /* py-20 */
+}
+
+.loaderSpinner {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 4px solid rgba(var(--primary-rgb), 0.2);
+  border-top-color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+.pageContainer {
+  padding: 1.25rem;
+  max-width: 56rem; /* 4xl */
+  margin: 0 auto;
+  padding-bottom: 6rem; /* pb-24 */
+}
+@media (min-width: 640px) {
+  .pageContainer {
+    padding: 1.75rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.headerArea {
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.titleIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--primary);
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  margin-top: 0.5rem;
+}
+
+.contentCard {
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 0 0 1px var(--shadow-border);
+  overflow: hidden;
+}
+
+.settingsBar {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--surface-raised);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tzBox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.tzLabel {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.tzSelect {
+  background-color: var(--background);
+  box-shadow: 0 0 0 1px var(--shadow-border);
+  border-radius: var(--radius-lg);
+  padding: 0.375rem 0.75rem;
+  outline: none;
+  transition: box-shadow 0.2s;
+  color: var(--foreground);
+}
+.tzSelect:focus {
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.3);
+}
+
+.autoDetect {
+  font-size: 0.625rem;
+  color: var(--foreground-subtle);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.saveBtn {
+  box-shadow: 0 4px 14px 0 rgba(var(--primary-rgb), 0.39);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.msgBox {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.msgSuccess {
+  background-color: rgba(var(--success-rgb), 0.1);
+  color: var(--success);
+  border-bottom-color: rgba(var(--success-rgb), 0.2);
+}
+.msgError {
+  background-color: rgba(var(--destructive-rgb), 0.1);
+  color: var(--destructive);
+  border-bottom-color: rgba(var(--destructive-rgb), 0.2);
+}
+
+.daysList {
+  display: flex;
+  flex-direction: column;
+}
+.daysList > div:not(:last-child) {
+  border-bottom: 1px solid rgba(var(--foreground-rgb), 0.1); /* border-border/50 approx */
+}
+
+.dayRow {
+  padding: 1.25rem;
+  transition: colors 0.2s;
+}
+.dayRowDisabled {
+  opacity: 0.5;
+}
+
+.dayLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .dayLayout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.dayToggleBox {
+  width: 10rem; /* 40 */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Custom Toggle Switch */
+.toggleLabel {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.toggleInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.toggleTrack {
+  width: 2.25rem; /* w-9 */
+  height: 1.25rem; /* h-5 */
+  background-color: var(--surface-raised);
+  box-shadow: 0 0 0 1px var(--shadow-border);
+  border-radius: 9999px;
+  position: relative;
+  transition: all 0.2s;
+}
+.toggleInput:focus + .toggleTrack {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.4);
+}
+.toggleInput:checked + .toggleTrack {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+.toggleTrack::after {
+  content: "";
+  position: absolute;
+  top: 1px; /* effectively 2px minus border */
+  left: 1px;
+  background-color: var(--foreground-muted);
+  border: 1px solid #ccc; /* standard gray-300 */
+  border-radius: 9999px;
+  height: 1rem; /* h-4 */
+  width: 1rem; /* w-4 */
+  transition: all 0.2s;
+}
+.toggleInput:checked + .toggleTrack::after {
+  transform: translateX(100%);
+  background-color: #fff;
+  border-color: #fff;
+}
+
+.dayNameText {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.intervalsBox {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.unavailableText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem; /* h-10 */
+}
+
+.intervalRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.timeInput {
+  width: 8rem; /* 32 */
+  background-color: var(--background);
+  box-shadow: none;
+  height: 2.5rem; /* h-10 */
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+:global(.dark) .timeInput {
+  color-scheme: dark;
+}
+
+.intervalDash {
+  color: var(--foreground-muted);
+  font-weight: 500;
+  padding: 0 0.25rem;
+}
+
+.removeBtn {
+  color: var(--foreground-muted);
+  height: 2.5rem !important;
+  width: 2.5rem !important;
+  border-radius: var(--radius-xl);
+}
+.removeBtn:hover {
+  color: var(--destructive);
+  background-color: rgba(var(--destructive-rgb), 0.1);
+}
+
+.addIntervalBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  text-decoration-color: transparent;
+  border-style: dashed;
+}

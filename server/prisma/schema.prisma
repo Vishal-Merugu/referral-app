@@ -1,0 +1,222 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  EMPLOYEE
+  SEEKER
+  ADMIN
+}
+
+enum ReferralStatus {
+  ACTIVE
+  CLOSED
+  DRAFT
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum RemoteType {
+  REMOTE
+  HYBRID
+  ONSITE
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String?
+  role          UserRole  @default(SEEKER)
+
+  // Profile Info
+  firstName     String?
+  lastName      String?
+  headline      String?
+  bio           String?
+  avatarUrl     String?
+  skills        String[]
+  githubUrl     String?
+  linkedinUrl   String?
+  portfolioUrl  String?
+  resumeUrl     String?
+  isBanned      Boolean   @default(false)
+
+  // Employee Specifics
+  workEmail     String?   @unique
+  isVerified    Boolean   @default(false)
+  linkedInId    String?   @unique
+
+  companyId     String?
+  company       Company?  @relation(fields: [companyId], references: [id])
+
+  // Relations
+  referralPosts  ReferralPost[]
+  appointments   Appointment[]   @relation("SeekerAppointments")
+  savedReferrals SavedReferral[]
+  sentMessages   Message[]       @relation("SentMessages")
+  receivedMessages Message[]     @relation("ReceivedMessages")
+  notifications  Notification[]
+  reviewsWritten Review[]        @relation("ReviewsWritten")
+  reviewsReceived Review[]       @relation("ReviewsReceived")
+  resources      Resource[]
+  availabilitySlots AvailabilitySlot[]
+
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Company {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  domain       String   @unique
+  logoUrl      String?
+  description  String?
+  websiteUrl   String?
+  industry     String?
+  headquarters String?
+  size         String?
+  techStack    String[]
+  perks        String[]
+  isApproved   Boolean  @default(true)
+
+  employees    User[]
+  resources    Resource[]
+
+  createdAt    DateTime @default(now())
+}
+
+model ReferralPost {
+  id              String         @id @default(uuid())
+
+  employeeId      String
+  employee        User           @relation(fields: [employeeId], references: [id])
+
+  jobRole         String
+  department      String?
+  experienceLevel String
+  description     String
+  skills          String[]
+  remoteType      RemoteType     @default(ONSITE)
+  salaryMin       Int?
+  salaryMax       Int?
+  viewCount       Int            @default(0)
+
+  referralPrice   Decimal        @default(0.0)
+  status          ReferralStatus @default(ACTIVE)
+
+  appointments    Appointment[]
+  savedBy         SavedReferral[]
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model SavedReferral {
+  id             String       @id @default(uuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  referralPostId String
+  referralPost   ReferralPost @relation(fields: [referralPostId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@unique([userId, referralPostId])
+}
+
+model Appointment {
+  id              String            @id @default(uuid())
+
+  seekerId        String
+  seeker          User              @relation("SeekerAppointments", fields: [seekerId], references: [id])
+
+  referralPostId  String
+  referralPost    ReferralPost      @relation(fields: [referralPostId], references: [id])
+
+  status          AppointmentStatus @default(PENDING)
+  stage           String            @default("INTRO")
+  scheduledAt     DateTime?
+  message         String?
+
+  messages        Message[]
+  review          Review?
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Message {
+  id            String      @id @default(uuid())
+  senderId      String
+  sender        User        @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId    String
+  receiver      User        @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  content       String
+  readAt        DateTime?
+  createdAt     DateTime    @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  body      String
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id            String      @id @default(uuid())
+  reviewerId    String
+  reviewer      User        @relation("ReviewsWritten", fields: [reviewerId], references: [id])
+  revieweeId    String
+  reviewee      User        @relation("ReviewsReceived", fields: [revieweeId], references: [id])
+  appointmentId String      @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  rating        Int
+  comment       String?
+  createdAt     DateTime    @default(now())
+}
+
+model Resource {
+  id        String   @id @default(uuid())
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  title     String
+  content   String
+  category  String
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+  upvotes   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AvailabilitySlot {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayOfWeek Int      // 0 = Sunday, 1 = Monday, etc.
+  startTime String   // "HH:MM" in 24h format
+  endTime   String   // "HH:MM" in 24h format
+  timezone  String   @default("UTC")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
