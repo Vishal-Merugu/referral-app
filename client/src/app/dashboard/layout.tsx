@@ -209,6 +209,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [sidebarOpen, setSidebar] = useState(false);
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
   // Derive page title from current route
   const pageTitle =
@@ -224,6 +225,7 @@ export default function DashboardLayout({
     try {
       const { data } = await auth.getProfile();
       setUser(data);
+      setIsAuthReady(true);
     } catch {
       router.push("/login");
     }
@@ -241,6 +243,14 @@ export default function DashboardLayout({
     .join("")
     .toUpperCase()
     .slice(0, 2);
+
+  if (!isAuthReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-8 h-8 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

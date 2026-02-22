@@ -10,6 +10,7 @@ import { Calendar, Plus, Trash2, Save, Clock, Info } from "lucide-react";
 import styles from "./page.module.css";
 
 interface Slot {
+  id: string;
   dayOfWeek: number;
   startTime: string;
   endTime: string;
@@ -54,11 +55,17 @@ export default function AvailabilityPage() {
         const { data: availData } = await availabilityApi.getMine();
         if (mounted) {
           if (availData.slots && availData.slots.length > 0) {
-            setSlots(availData.slots);
+            setSlots(
+              availData.slots.map((s: Omit<Slot, "id">) => ({
+                ...s,
+                id: crypto.randomUUID(),
+              })),
+            );
             setTimezone(availData.slots[0].timezone || timezone);
           } else {
             // Default block 9-5 M-F
             const defaultSlots = [1, 2, 3, 4, 5].map((day) => ({
+              id: crypto.randomUUID(),
               dayOfWeek: day,
               startTime: "09:00",
               endTime: "17:00",
@@ -79,28 +86,35 @@ export default function AvailabilityPage() {
   }, [router, timezone]);
 
   const addSlot = (dayOfWeek: number) => {
-    setSlots([...slots, { dayOfWeek, startTime: "09:00", endTime: "17:00" }]);
+    setSlots([
+      ...slots,
+      {
+        id: crypto.randomUUID(),
+        dayOfWeek,
+        startTime: "09:00",
+        endTime: "17:00",
+      },
+    ]);
   };
 
-  const removeSlot = (index: number) => {
-    setSlots(slots.filter((_, i) => i !== index));
+  const removeSlot = (id: string) => {
+    setSlots(slots.filter((s) => s.id !== id));
   };
 
   const updateSlot = (
-    index: number,
+    id: string,
     field: "startTime" | "endTime",
     value: string,
   ) => {
-    const updated = [...slots];
-    updated[index] = { ...updated[index], [field]: value };
-    setSlots(updated);
+    setSlots(slots.map((s) => (s.id === id ? { ...s, [field]: value } : s)));
   };
 
   const handleSave = async () => {
     setSaving(true);
     setMessage(null);
     try {
-      await availabilityApi.setMine({ timezone, slots });
+      const apiSlots = slots.map(({ id, ...rest }) => rest);
+      await availabilityApi.setMine({ timezone, slots: apiSlots });
       setMessage({ text: "Availability saved successfully!", type: "success" });
     } catch {
       setMessage({ text: "Failed to save availability.", type: "error" });
@@ -214,21 +228,15 @@ export default function AvailabilityPage() {
                       </div>
                     ) : (
                       <>
-                        {daySlots.map((slot, i) => {
-                          const globalIndex = slots.findIndex(
-                            (s) => s === slot,
-                          );
+                        {daySlots.map((slot) => {
                           return (
-                            <div
-                              key={globalIndex}
-                              className={styles.intervalRow}
-                            >
+                            <div key={slot.id} className={styles.intervalRow}>
                               <Input
                                 type="time"
                                 value={slot.startTime}
                                 onChange={(e) =>
                                   updateSlot(
-                                    globalIndex,
+                                    slot.id,
                                     "startTime",
                                     e.target.value,
                                   )
@@ -240,11 +248,7 @@ export default function AvailabilityPage() {
                                 type="time"
                                 value={slot.endTime}
                                 onChange={(e) =>
-                                  updateSlot(
-                                    globalIndex,
-                                    "endTime",
-                                    e.target.value,
-                                  )
+                                  updateSlot(slot.id, "endTime", e.target.value)
                                 }
                                 className={styles.timeInput}
                               />
@@ -252,7 +256,7 @@ export default function AvailabilityPage() {
                                 variant="ghost"
                                 size="icon"
                                 className={styles.removeBtn}
-                                onClick={() => removeSlot(globalIndex)}
+                                onClick={() => removeSlot(slot.id)}
                               >
                                 <Trash2 className="w-4 h-4" />
                               </Button>

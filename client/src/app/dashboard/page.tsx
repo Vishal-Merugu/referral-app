@@ -159,7 +159,7 @@ export default function DashboardPage() {
           </p>
         </div>
         {user?.role === "EMPLOYEE" && (
-          <Link href="/dashboard/referrals/new">
+          <Link href="/dashboard/my-referrals/create">
             <Button variant="gradient" size="sm" className={styles.newPostBtn}>
               <Plus className={styles.icon3_5} />
               New post
@@ -221,7 +221,7 @@ export default function DashboardPage() {
               <Link
                 href={
                   user?.role === "EMPLOYEE"
-                    ? "/dashboard/referrals/new"
+                    ? "/dashboard/my-referrals/create"
                     : "/dashboard/browse"
                 }
               >
