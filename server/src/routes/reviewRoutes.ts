@@ -55,7 +55,7 @@ router.get(
   '/user/:id',
   asyncHandler(async (req: Request, res: Response) => {
     const reviews = await prisma.review.findMany({
-      where: { revieweeId: req.params.id },
+      where: { revieweeId: req.params.id as string },
       include: {
         reviewer: {
           select: {

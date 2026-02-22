@@ -115,7 +115,7 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
 };
 
 export const getPublicProfile = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const user = await prisma.user.findUnique({
     where: { id },
     select: {

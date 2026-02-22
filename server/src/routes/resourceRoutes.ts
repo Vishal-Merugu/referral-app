@@ -53,7 +53,7 @@ router.get(
   '/:id',
   asyncHandler(async (req: Request, res: Response) => {
     const resource = await prisma.resource.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       include: {
         author: {
           select: {
@@ -97,7 +97,7 @@ router.post(
   authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const resource = await prisma.resource.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: { upvotes: { increment: 1 } },
     });
     res.json({ upvotes: resource.upvotes });

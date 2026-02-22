@@ -4,7 +4,7 @@ import type { AuthRequest } from '../global';
 
 export const getThread = async (req: AuthRequest, res: Response) => {
   const userId = req.userId!;
-  const { partnerId } = req.params;
+  const partnerId = req.params.partnerId as string;
   const msgs = await prisma.message.findMany({
     where: {
       OR: [
@@ -69,7 +69,7 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
 export const markRead = async (req: AuthRequest, res: Response) => {
   await prisma.message.updateMany({
     where: {
-      senderId: req.params.senderId,
+      senderId: req.params.senderId as string,
       receiverId: req.userId!,
       readAt: null,
     },

@@ -56,7 +56,7 @@ export const getUsers = async (req: AuthRequest, res: Response) => {
 
 export const banUser = async (req: AuthRequest, res: Response) => {
   await prisma.user.update({
-    where: { id: req.params.id },
+    where: { id: req.params.id as string },
     data: { isBanned: true },
   });
   res.json({ success: true });
@@ -64,7 +64,7 @@ export const banUser = async (req: AuthRequest, res: Response) => {
 
 export const unbanUser = async (req: AuthRequest, res: Response) => {
   await prisma.user.update({
-    where: { id: req.params.id },
+    where: { id: req.params.id as string },
     data: { isBanned: false },
   });
   res.json({ success: true });
@@ -96,7 +96,7 @@ export const getReferrals = async (req: AuthRequest, res: Response) => {
 
 export const closeReferral = async (req: AuthRequest, res: Response) => {
   await prisma.referralPost.update({
-    where: { id: req.params.id },
+    where: { id: req.params.id as string },
     data: { status: 'CLOSED' },
   });
   res.json({ success: true });
