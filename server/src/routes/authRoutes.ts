@@ -13,5 +13,14 @@ router.patch(
   authenticate,
   asyncHandler(authController.updateProfile),
 );
+router.delete(
+  '/account',
+  authenticate,
+  asyncHandler(authController.deleteAccount),
+);
+router.post(
+  '/reset-password',
+  asyncHandler(authController.requestPasswordReset),
+);
 
 export default router;

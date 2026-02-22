@@ -80,6 +80,8 @@ export const auth = {
   signup: (data: SignupPayload) => api.post("/auth/signup", data),
   login: (data: LoginPayload) => api.post("/auth/login", data),
   getProfile: () => api.get("/auth/profile"),
+  deleteAccount: () => api.delete("/auth/account"),
+  resetPassword: (email: string) => api.post("/auth/reset-password", { email }),
 };
 
 // ── Profile ────────────────────────────────────────────────────────────────
@@ -201,6 +203,9 @@ export const admin = {
     api.get("/admin/users", { params }),
   banUser: (id: string) => api.patch(`/admin/users/${id}/ban`),
   unbanUser: (id: string) => api.patch(`/admin/users/${id}/unban`),
+  referrals: (params?: { page?: number; search?: string }) =>
+    api.get("/admin/referrals", { params }),
+  closeReferral: (id: string) => api.patch(`/admin/referrals/${id}/close`),
 };
 
 // ── Set token ──────────────────────────────────────────────────────────────

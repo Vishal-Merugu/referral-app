@@ -34,6 +34,14 @@ interface AdminUser {
   company?: { name: string } | null;
 }
 
+interface AdminReferral {
+  id: string;
+  jobRole: string;
+  status: string;
+  employee: { firstName: string; lastName: string; email: string };
+  createdAt: string;
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -41,19 +49,22 @@ export default function AdminPage() {
     totalUsers: number;
     activeReferrals: number;
     appointmentsToday: number;
+    newUsersThisWeek?: number;
   } | null>(null);
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [referrals, setReferrals] = useState<AdminReferral[]>([]);
   const [search, setSearch] = useState("");
+  const [referralsSearch, setReferralsSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"stats" | "users">("stats");
+  const [activeTab, setActiveTab] = useState<"stats" | "users" | "referrals">(
+    "stats",
+  );
 
   const load = async () => {
     try {
-      const [{ data: u }, statsRes, usersRes] = await Promise.all([
-        auth.getProfile(),
-        admin.stats(),
-        admin.users(),
-      ]);
+      const [{ data: u }, statsRes, usersRes, referralsRes] = await Promise.all(
+        [auth.getProfile(), admin.stats(), admin.users(), admin.referrals()],
+      );
       if (u.role !== "ADMIN") {
         router.push("/dashboard");
         return;
@@ -61,6 +72,7 @@ export default function AdminPage() {
       setUser(u);
       setStats(statsRes.data);
       setUsers(usersRes.data.users || []);
+      setReferrals(referralsRes.data.referrals || []);
     } catch {
       router.push("/login");
     } finally {
@@ -78,13 +90,29 @@ export default function AdminPage() {
     load();
   };
 
-  const filtered = users.filter(
+  const handleCloseReferral = async (id: string) => {
+    if (confirm("Are you sure you want to close this referral?")) {
+      await admin.closeReferral(id);
+      load();
+    }
+  };
+
+  const filteredUsers = users.filter(
     (u) =>
       !search ||
       u.email.toLowerCase().includes(search.toLowerCase()) ||
       `${u.firstName} ${u.lastName}`
         .toLowerCase()
         .includes(search.toLowerCase()),
+  );
+
+  const filteredReferrals = referrals.filter(
+    (r) =>
+      !referralsSearch ||
+      r.jobRole.toLowerCase().includes(referralsSearch.toLowerCase()) ||
+      `${r.employee.firstName} ${r.employee.lastName}`
+        .toLowerCase()
+        .includes(referralsSearch.toLowerCase()),
   );
 
   if (loading)
@@ -121,6 +149,13 @@ export default function AdminPage() {
                 bg: "bg-primary/10",
               },
               {
+                label: "New users (7d)",
+                value: stats.newUsersThisWeek || 0,
+                icon: Sparkles,
+                color: "text-purple",
+                bg: "bg-purple/10",
+              },
+              {
                 label: "Active referrals",
                 value: stats.activeReferrals,
                 icon: Building2,
@@ -152,7 +187,7 @@ export default function AdminPage() {
 
         {/* Tabs */}
         <div className={styles.tabsList}>
-          {(["stats", "users"] as const).map((t) => (
+          {(["stats", "users", "referrals"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setActiveTab(t)}
@@ -168,7 +203,7 @@ export default function AdminPage() {
           <Card>
             <CardHeader className={styles.cardHeader}>
               <div className={styles.cardHeaderFlex}>
-                <CardTitle>All users ({filtered.length})</CardTitle>
+                <CardTitle>All users ({filteredUsers.length})</CardTitle>
                 <div className={styles.searchWrap}>
                   <Search className={styles.searchIcon} />
                   <Input
@@ -194,7 +229,7 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((u) => (
+                    {filteredUsers.map((u) => (
                       <tr key={u.id} className={styles.tableRow}>
                         <td className={styles.tableCell}>
                           <div>
@@ -276,6 +311,92 @@ export default function AdminPage() {
                                 </>
                               )}
                             </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Referrals table */}
+        {activeTab === "referrals" && (
+          <Card>
+            <CardHeader className={styles.cardHeader}>
+              <div className={styles.cardHeaderFlex}>
+                <CardTitle>
+                  All referrals ({filteredReferrals.length})
+                </CardTitle>
+                <div className={styles.searchWrap}>
+                  <Search className={styles.searchIcon} />
+                  <Input
+                    placeholder="Search roles or employees..."
+                    value={referralsSearch}
+                    onChange={(e) => setReferralsSearch(e.target.value)}
+                    className={styles.searchInput}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className={styles.cardContent}>
+              <div className={styles.tableContainer}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr className={styles.tableHeaderRow}>
+                      <th className={styles.tableHeaderCell}>Job Role</th>
+                      <th className={styles.tableHeaderCell}>Employee</th>
+                      <th className={styles.tableHeaderCell}>Status</th>
+                      <th className={styles.tableHeaderCell}>Created At</th>
+                      <th className={styles.tableHeaderCell} />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredReferrals.map((r) => (
+                      <tr key={r.id} className={styles.tableRow}>
+                        <td className={styles.tableCell}>
+                          <p className={styles.userName}>{r.jobRole}</p>
+                        </td>
+                        <td className={styles.tableCell}>
+                          <div>
+                            <p className={styles.userName}>
+                              {r.employee.firstName} {r.employee.lastName}
+                            </p>
+                            <p className={styles.userEmail}>
+                              {r.employee.email}
+                            </p>
+                          </div>
+                        </td>
+                        <td className={styles.tableCell}>
+                          <Badge
+                            variant={
+                              r.status === "ACTIVE" ? "success" : "secondary"
+                            }
+                            className={styles.userText}
+                          >
+                            {r.status}
+                          </Badge>
+                        </td>
+                        <td className={styles.tableCell}>
+                          <span className={styles.userText}>
+                            {new Date(r.createdAt).toLocaleDateString()}
+                          </span>
+                        </td>
+                        <td className={styles.tableCell}>
+                          <div className={styles.actionFlex}>
+                            {r.status === "ACTIVE" && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-destructive hover:text-destructive"
+                                onClick={() => handleCloseReferral(r.id)}
+                              >
+                                <Ban className={styles.iconXs} />
+                                Close
+                              </Button>
+                            )}
                           </div>
                         </td>
                       </tr>

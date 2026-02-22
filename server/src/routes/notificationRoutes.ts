@@ -1,58 +1,29 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/auth';
 import { asyncHandler } from '../utils/asyncHandler';
-import prisma from '../utils/prisma';
-import type { AuthRequest } from '../global';
-import { Response } from 'express';
+import * as notificationController from '../controllers/notificationController';
 
 const router = Router();
 
 router.get(
   '/',
   authenticate,
-  asyncHandler(async (req: AuthRequest, res: Response) => {
-    const notifications = await prisma.notification.findMany({
-      where: { userId: req.userId! },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-    });
-    res.json(notifications);
-  }),
+  asyncHandler(notificationController.getNotifications),
 );
-
 router.get(
   '/unread-count',
   authenticate,
-  asyncHandler(async (req: AuthRequest, res: Response) => {
-    const count = await prisma.notification.count({
-      where: { userId: req.userId!, readAt: null },
-    });
-    res.json({ count });
-  }),
+  asyncHandler(notificationController.getUnreadCount),
 );
-
 router.patch(
   '/read-all',
   authenticate,
-  asyncHandler(async (req: AuthRequest, res: Response) => {
-    await prisma.notification.updateMany({
-      where: { userId: req.userId!, readAt: null },
-      data: { readAt: new Date() },
-    });
-    res.json({ success: true });
-  }),
+  asyncHandler(notificationController.markAllAsRead),
 );
-
 router.patch(
   '/:id/read',
   authenticate,
-  asyncHandler(async (req: AuthRequest, res: Response) => {
-    await prisma.notification.update({
-      where: { id: req.params.id },
-      data: { readAt: new Date() },
-    });
-    res.json({ success: true });
-  }),
+  asyncHandler(notificationController.markAsRead),
 );
 
 export default router;

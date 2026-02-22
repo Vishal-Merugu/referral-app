@@ -13,6 +13,7 @@ import {
   Send,
   Loader2,
   MessageSquare,
+  RefreshCw,
 } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -183,8 +184,17 @@ function MessagesContent() {
       <div className={styles.mainContent}>
         {/* Sidebar */}
         <div className={styles.sidebar}>
-          <div className={styles.sidebarHeader}>
+          <div
+            className={`${styles.sidebarHeader} flex items-center justify-between`}
+          >
             <p className={styles.sidebarTitle}>Conversations</p>
+            <button
+              onClick={loadConversations}
+              className="p-1.5 hover:bg-surface-hover rounded-full transition-colors text-foreground-muted hover:text-foreground"
+              title="Refresh conversations"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
           </div>
           <div className={styles.threadList}>
             {conversations.length === 0 ? (
@@ -208,7 +218,11 @@ function MessagesContent() {
                     />
                     <div className={styles.partnerInfo}>
                       <p className={styles.partnerName}>{name}</p>
-                      <p className={styles.partnerMsg}>{p.lastMessage}</p>
+                      <p
+                        className={`${styles.partnerMsg} truncate text-xs text-foreground-muted mt-0.5`}
+                      >
+                        {p.lastMessage}
+                      </p>
                     </div>
                   </button>
                 );
@@ -294,13 +308,22 @@ function MessagesContent() {
             </>
           ) : (
             <div className={styles.emptyChat}>
-              <div className={`gradient-button ${styles.emptyChatIconBox}`}>
-                <MessageSquare className={styles.emptyChatIcon} />
-              </div>
-              <div>
-                <h3 className={styles.emptyChatTitle}>Your messages</h3>
-                <p className={styles.emptyChatDesc}>
-                  Select a conversation to start chatting
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: `<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-foreground-muted/30 mb-6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
+                }}
+              />
+              <div className="text-center">
+                <h3
+                  className={`${styles.emptyChatTitle} text-xl font-semibold text-foreground mb-2`}
+                >
+                  Your messages
+                </h3>
+                <p
+                  className={`${styles.emptyChatDesc} text-sm text-foreground-muted max-w-xs mx-auto`}
+                >
+                  Select a conversation from the sidebar to view your messages
+                  and continue the discussion.
                 </p>
               </div>
             </div>

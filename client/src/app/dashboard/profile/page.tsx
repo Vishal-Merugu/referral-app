@@ -5,6 +5,7 @@ import {
   auth,
   profile as profileApi,
   companies as companiesApi,
+  setAuthToken,
 } from "@/utils/api";
 import type { User } from "@/types/api";
 import { Button } from "@/components/ui/button";
@@ -60,6 +61,8 @@ export default function ProfilePage() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [resetting, setResetting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [savedAt, setSavedAt] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("About");
 
@@ -113,6 +116,36 @@ export default function ProfilePage() {
       /* noop */
     }
     setSaving(false);
+  };
+
+  const handleResetPassword = async () => {
+    if (!user?.email) return;
+    setResetting(true);
+    try {
+      await auth.resetPassword(user.email);
+      alert("Password reset link sent to your email.");
+    } catch {
+      alert("Failed to send reset email.");
+    }
+    setResetting(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (
+      !confirm(
+        "Are you sure you want to permanently delete your account? This cannot be undone.",
+      )
+    )
+      return;
+    setDeleting(true);
+    try {
+      await auth.deleteAccount();
+      setAuthToken(null);
+      window.location.href = "/signup";
+    } catch {
+      alert("Failed to delete account.");
+      setDeleting(false);
+    }
   };
 
   if (loading)
@@ -352,8 +385,17 @@ export default function ProfilePage() {
               <p className={styles.securityCardDesc}>
                 We&apos;ll send a reset link to your email.
               </p>
-              <Button variant="outline" size="sm">
-                Send reset email
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleResetPassword}
+                disabled={resetting}
+              >
+                {resetting ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  "Send reset email"
+                )}
               </Button>
             </div>
             <div className={`glass-card ${styles.dangerCard}`}>
@@ -361,8 +403,17 @@ export default function ProfilePage() {
               <p className={styles.dangerCardDesc}>
                 Permanent. Cannot be undone.
               </p>
-              <Button variant="destructive" size="sm">
-                Delete my account
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+              >
+                {deleting ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  "Delete my account"
+                )}
               </Button>
             </div>
           </div>

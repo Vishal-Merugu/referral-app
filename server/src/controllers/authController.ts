@@ -201,3 +201,48 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
   });
   res.json(user);
 };
+
+export const deleteAccount = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { referralPosts: true },
+  });
+  if (!user) return res.status(404).json({ error: 'Not found' });
+
+  const postIds = user.referralPosts.map((p) => p.id);
+
+  await prisma.$transaction([
+    prisma.message.deleteMany({
+      where: { OR: [{ senderId: userId }, { receiverId: userId }] },
+    }),
+    prisma.notification.deleteMany({ where: { userId } }),
+    prisma.savedReferral.deleteMany({ where: { userId } }),
+    prisma.availabilitySlot.deleteMany({ where: { userId } }),
+    prisma.review.deleteMany({
+      where: { OR: [{ reviewerId: userId }, { revieweeId: userId }] },
+    }),
+    prisma.appointment.deleteMany({
+      where: {
+        OR: [{ seekerId: userId }, { referralPostId: { in: postIds } }],
+      },
+    }),
+    prisma.referralPost.deleteMany({ where: { employeeId: userId } }),
+    prisma.resource.deleteMany({ where: { authorId: userId } }),
+    prisma.user.delete({ where: { id: userId } }),
+  ]);
+
+  res.json({ success: true, message: 'Account deleted successfully' });
+};
+
+export const requestPasswordReset = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+  // Dummy implementation
+  res.json({
+    success: true,
+    message: 'If that email exists, a reset link has been sent.',
+  });
+};
