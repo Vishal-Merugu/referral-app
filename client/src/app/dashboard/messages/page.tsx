@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { auth, messages as messagesApi } from "@/utils/api";
 import type { User, Message } from "@/types/api";
+import { io, Socket } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -74,6 +75,13 @@ function MessagesContent() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const threadEndRef = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+
+  // Derive unified room ID alphabetically based on IDs
+  const getRoomId = (pId: string) => {
+    if (!user) return "";
+    return [user.id, pId].sort().join("_");
+  };
 
   const loadConversations = useCallback(async () => {
     const { data } = (await messagesApi.getThread)
@@ -137,13 +145,59 @@ function MessagesContent() {
   useEffect(() => {
     if (user) loadConversations();
   }, [user, loadConversations]);
+
   useEffect(() => {
     if (activePartnerId) {
       loadThread(activePartnerId);
-      const interval = setInterval(() => loadThread(activePartnerId), 5000);
-      return () => clearInterval(interval);
+      // Optimistically create a placeholder if it's a completely new chat
+      if (
+        !conversations.find((c) => c.id === activePartnerId) &&
+        activePartnerId !== user?.id
+      ) {
+        setActivePartner({
+          id: activePartnerId,
+          firstName: "New",
+          lastName: "Message",
+          avatarUrl: null,
+        });
+      } else {
+        const p = conversations.find((c) => c.id === activePartnerId);
+        if (p) setActivePartner(p);
+      }
     }
-  }, [activePartnerId, loadThread]);
+  }, [activePartnerId, loadThread, conversations, user?.id]);
+
+  useEffect(() => {
+    if (!user) return;
+    const socketUrl =
+      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
+    socketRef.current = io(socketUrl);
+
+    socketRef.current.on("receive_message", (m: Message) => {
+      // If the incoming message belongs to our currently active conversation room
+      if (m.senderId === activePartnerId || m.receiverId === activePartnerId) {
+        setThread((prev) => {
+          if (prev.find((x) => x.id === m.id)) return prev;
+          return [...prev, m];
+        });
+        setTimeout(
+          () => threadEndRef.current?.scrollIntoView({ behavior: "smooth" }),
+          50,
+        );
+      }
+      loadConversations();
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, [user, activePartnerId, loadConversations]);
+
+  useEffect(() => {
+    if (activePartnerId && socketRef.current) {
+      socketRef.current.emit("join_room", getRoomId(activePartnerId));
+    }
+  }, [activePartnerId, user]);
 
   const selectPartner = (p: ConversationPartner) => {
     setActivePartnerId(p.id);
@@ -155,12 +209,25 @@ function MessagesContent() {
     if (!input.trim() || !activePartnerId || !user) return;
     setSending(true);
     try {
-      await messagesApi.send({
+      const { data: sentMsg } = await messagesApi.send({
         receiverId: activePartnerId,
         content: input.trim(),
       });
       setInput("");
-      await loadThread(activePartnerId);
+      // Add instantly to UI
+      setThread((prev) => [...prev, sentMsg]);
+      setTimeout(
+        () => threadEndRef.current?.scrollIntoView({ behavior: "smooth" }),
+        50,
+      );
+      // Broadcast over network
+      if (socketRef.current) {
+        socketRef.current.emit("send_message", {
+          roomId: getRoomId(activePartnerId),
+          message: sentMsg,
+        });
+      }
+      loadConversations();
     } catch {
       /* noop */
     } finally {

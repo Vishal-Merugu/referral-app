@@ -60,7 +60,36 @@ export const createAppointment = async (req: AuthRequest, res: Response) => {
         scheduledAt: scheduledAt ? new Date(scheduledAt as string) : null,
         status: AppointmentStatus.PENDING,
       },
+      include: {
+        seeker: { select: { firstName: true, lastName: true } },
+      },
     });
+
+    // Notify the employee
+    if (referralPost && referralPost.employeeId) {
+      await prisma.notification.create({
+        data: {
+          userId: referralPost.employeeId,
+          type: 'APPOINTMENT_BOOKED',
+          title: 'New Appointment Booked',
+          body: `${appointment.seeker.firstName} ${appointment.seeker.lastName} booked an appointment for ${referralPost.jobRole}.`,
+          link: `/dashboard/pipeline`,
+        },
+      });
+
+      const seedMessage =
+        finalMessage ||
+        `Hi! I just applied for the ${referralPost.jobRole} role. Looking forward to connecting!`;
+
+      await prisma.message.create({
+        data: {
+          senderId: userId,
+          receiverId: referralPost.employeeId,
+          content: seedMessage,
+          appointmentId: appointment.id,
+        },
+      });
+    }
 
     res.status(201).json(appointment);
   } catch (error) {
@@ -74,12 +103,23 @@ export const getMyAppointments = async (req: AuthRequest, res: Response) => {
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
     const appointments = await prisma.appointment.findMany({
-      where: { seekerId: userId },
+      where: {
+        OR: [{ seekerId: userId }, { referralPost: { employeeId: userId } }],
+      },
       include: {
+        seeker: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+          },
+        },
         referralPost: {
           include: {
             employee: {
               select: {
+                id: true,
                 firstName: true,
                 lastName: true,
                 company: true,

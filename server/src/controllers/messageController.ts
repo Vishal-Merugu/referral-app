@@ -53,16 +53,6 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
       },
     },
   });
-  // create notification
-  await prisma.notification.create({
-    data: {
-      userId: receiverId,
-      type: 'NEW_MESSAGE',
-      title: 'New message',
-      body: content.slice(0, 100),
-      link: `/dashboard/messages`,
-    },
-  });
   res.status(201).json(msg);
 };
 
@@ -79,10 +69,11 @@ export const markRead = async (req: AuthRequest, res: Response) => {
 };
 
 export const getUnreadCount = async (req: AuthRequest, res: Response) => {
-  const count = await prisma.message.count({
+  const unreadSenders = await prisma.message.groupBy({
+    by: ['senderId'],
     where: { receiverId: req.userId!, readAt: null },
   });
-  res.json({ count });
+  res.json({ count: unreadSenders.length });
 };
 
 export const getConversations = async (req: AuthRequest, res: Response) => {

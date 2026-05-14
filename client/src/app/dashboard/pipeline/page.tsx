@@ -152,9 +152,13 @@ export default function KanbanPage() {
               <div className={`${styles.colBody} ${STAGE_COLORS[stage]}`}>
                 {byStage[stage].map((appt) => {
                   const roleName = appt.referralPost?.jobRole || "Position";
-                  const company = appt.referralPost?.employee?.company?.name;
-                  const empName =
-                    `${appt.referralPost?.employee?.firstName || ""} ${appt.referralPost?.employee?.lastName || ""}`.trim();
+                  const isEmployeeViewer = user?.role === "EMPLOYEE";
+                  const displayCompany = isEmployeeViewer
+                    ? ""
+                    : appt.referralPost?.employee?.company?.name;
+                  const displayName = isEmployeeViewer
+                    ? `${appt.seeker?.firstName || ""} ${appt.seeker?.lastName || ""}`.trim()
+                    : `${appt.referralPost?.employee?.firstName || ""} ${appt.referralPost?.employee?.lastName || ""}`.trim();
                   const daysAgo = appt.createdAt
                     ? Math.floor(
                         (Date.now() - new Date(appt.createdAt).getTime()) /
@@ -178,10 +182,10 @@ export default function KanbanPage() {
                             {appt.status}
                           </Badge>
                         </div>
-                        {company && (
+                        {displayCompany && (
                           <div className={styles.metaRow}>
                             <Building2 className={styles.metaIcon} />
-                            {company}
+                            {displayCompany}
                           </div>
                         )}
                         {appt.scheduledAt && (
@@ -197,24 +201,42 @@ export default function KanbanPage() {
                         )}
                         <div className={styles.cardFooter}>
                           <div className={styles.empBox}>
-                            <Avatar name={empName || "?"} />
-                            <span className={styles.empName}>{empName}</span>
+                            <Avatar name={displayName || "?"} />
+                            <span className={styles.empName}>
+                              {displayName}
+                            </span>
                           </div>
                           <span className={styles.timeAgo}>
                             {daysAgo === 0 ? "Today" : `${daysAgo}d ago`}
                           </span>
                         </div>
-                        {stage !== "OFFER" && appt.status === "CONFIRMED" && (
+                        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
                           <Button
-                            variant="soft"
+                            variant="outline"
                             size="sm"
-                            className={styles.advanceBtn}
-                            onClick={() => advanceStage(appt)}
+                            className="flex-1"
+                            asChild
                           >
-                            Move to {STAGES[STAGES.indexOf(stage) + 1]}
-                            <ChevronRight className={styles.chevronSm} />
+                            <Link
+                              href={`/dashboard/messages?partnerId=${isEmployeeViewer ? appt.seekerId : appt.referralPost?.employeeId}`}
+                            >
+                              Message
+                            </Link>
                           </Button>
-                        )}
+                          {stage !== "OFFER" &&
+                            appt.status === "CONFIRMED" &&
+                            isEmployeeViewer && (
+                              <Button
+                                variant="soft"
+                                size="sm"
+                                className={styles.advanceBtn}
+                                onClick={() => advanceStage(appt)}
+                              >
+                                Move to {STAGES[STAGES.indexOf(stage) + 1]}
+                                <ChevronRight className={styles.chevronSm} />
+                              </Button>
+                            )}
+                        </div>
                       </CardContent>
                     </Card>
                   );

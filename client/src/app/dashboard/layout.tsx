@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { auth, setAuthToken } from "@/utils/api";
-import type { User } from "@/types/api";
+import { auth, setAuthToken, messages as messagesApi } from "@/utils/api";
+import type { User, Message } from "@/types/api";
+import { io, Socket } from "socket.io-client";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationBell } from "@/components/notification-bell";
 import {
@@ -79,10 +80,12 @@ function Sidebar({
   user,
   open,
   onClose,
+  unreadMsgs,
 }: {
   user: User | null;
   open: boolean;
   onClose: () => void;
+  unreadMsgs: number;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -131,6 +134,11 @@ function Sidebar({
                 >
                   <Icon className={styles.navIcon} />
                   {label}
+                  {label === "Messages" && unreadMsgs > 0 && (
+                    <span className="ml-auto bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+                      {unreadMsgs}
+                    </span>
+                  )}
                   {active && <div className={styles.activeDot} />}
                 </div>
               </Link>
@@ -210,6 +218,8 @@ export default function DashboardLayout({
   const [user, setUser] = useState<User | null>(null);
   const [sidebarOpen, setSidebar] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
+  const [unreadMsgs, setUnreadMsgs] = useState(0);
+  const socketRef = useRef<Socket | null>(null);
 
   // Derive page title from current route
   const pageTitle =
@@ -223,9 +233,16 @@ export default function DashboardLayout({
 
   const loadUser = useCallback(async () => {
     try {
-      const { data } = await auth.getProfile();
-      setUser(data);
+      const { data: uData } = await auth.getProfile();
+      setUser(uData);
       setIsAuthReady(true);
+
+      try {
+        const { data: msgData } = await messagesApi.unreadCount();
+        setUnreadMsgs(msgData.count);
+      } catch (e) {
+        console.error("Failed to fetch unread count", e);
+      }
     } catch {
       router.push("/login");
     }
@@ -234,6 +251,42 @@ export default function DashboardLayout({
   useEffect(() => {
     loadUser();
   }, [loadUser]);
+
+  useEffect(() => {
+    // If the user navigates into Messages, optimistically zero out unread or refetch
+    if (pathname.includes("/dashboard/messages") && user) {
+      messagesApi
+        .unreadCount()
+        .then(({ data }) => setUnreadMsgs(data.count))
+        .catch(() => {});
+    }
+  }, [pathname, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    const socketUrl =
+      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
+    socketRef.current = io(socketUrl);
+
+    socketRef.current.emit("join_global", user.id);
+
+    socketRef.current.on("receive_global_message", (m: Message) => {
+      // If the message is pointing at us, and we are NOT actively on the messages view
+      if (
+        m.receiverId === user.id &&
+        !pathname.includes("/dashboard/messages")
+      ) {
+        messagesApi
+          .unreadCount()
+          .then(({ data }) => setUnreadMsgs(data.count))
+          .catch(() => {});
+      }
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, [user, pathname]);
 
   // derive initials for topbar
   const name = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim();
@@ -258,6 +311,7 @@ export default function DashboardLayout({
         user={user}
         open={sidebarOpen}
         onClose={() => setSidebar(false)}
+        unreadMsgs={unreadMsgs}
       />
 
       <div className={styles.mainContent}>
@@ -267,7 +321,14 @@ export default function DashboardLayout({
             className={styles.mobileMenuBtn}
             onClick={() => setSidebar(true)}
           >
-            <Menu className={styles.menuIcon} />
+            <div className="relative">
+              <Menu className={styles.menuIcon} />
+              {unreadMsgs > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground">
+                  {unreadMsgs > 9 ? "9+" : unreadMsgs}
+                </span>
+              )}
+            </div>
           </button>
           <span className={styles.pageTitle}>{pageTitle}</span>
           <div className={styles.spacer} />
