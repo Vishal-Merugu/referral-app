@@ -1,80 +1,80 @@
 # Referral App
 
-A comprehensive full-stack application designed to streamline the referral process, manage appointments, and track referral pipelines.
+A full-stack referral marketplace prototype for employees who post opportunities and job seekers who discover them, request introductions, and manage follow-up.
 
-## 🚀 Tech Stack
+## Features in the codebase
 
-### Frontend (Client)
-- **Framework:** Next.js (React)
-- **Styling:** Tailwind CSS
-- **Animations:** Framer Motion
-- **UI Components:** Radix UI, Lucide React
-- **Document Parsing:** Mammoth (Word), PDF.js (PDF)
-- **Real-time:** Socket.IO Client
+- Employee and seeker accounts with JWT authentication, profile editing, and role-specific views.
+- Referral posts with search filters, skills, salary range, work mode, and saved listings.
+- Resume upload and text extraction in the browser for PDF, DOCX, and plain text.
+- Optional Gemini-based extraction of role, experience, skills, and work-mode filters from resume text.
+- Appointment requests, availability slots, messaging, notifications, and reviews.
+- Company pages, resource listings, analytics, and admin endpoints.
 
-### Backend (Server)
-- **Runtime:** Node.js with Express
-- **Database:** PostgreSQL with Prisma ORM
-- **Authentication:** Passport.js (JWT, LinkedIn OAuth2), bcryptjs
-- **AI/LLM Integrations:** OpenAI, Google Generative AI
-- **Real-time:** Socket.IO
-- **Email:** Nodemailer
+Resume parsing happens in the client. The AI endpoint converts extracted resume text into search filters; it does not perform semantic or vector matching. The OpenAI/Gemini embedding helper is present in the server but is not wired into the matching flow.
 
-## 📁 Project Structure
+## Stack
 
-This is a monorepo containing both the frontend client and the backend server.
+- Client: Next.js 16, React 19, TypeScript, Tailwind CSS, Radix UI, Framer Motion
+- Server: Node.js, Express 5, TypeScript, Prisma 7, PostgreSQL
+- Realtime: Socket.IO
+- AI: Gemini filter extraction (optional; set GOOGLE_API_KEY or GEMINI_API_KEY)
+- Other integrations: Nodemailer, PDF.js, Mammoth
 
-- `/client` - Next.js frontend application
-- `/server` - Express.js backend application
+Authentication is implemented with JWT and bcrypt. The current source does not implement Passport or LinkedIn OAuth.
 
-## 🛠️ Getting Started
+## Run locally
 
-### Prerequisites
-- Node.js (v18 or higher recommended)
-- PostgreSQL database
-- API Keys (OpenAI, Gemini, LinkedIn Auth, etc.) depending on environment configuration.
+### Requirements
 
-### Backend Setup
-1. Navigate to the server directory:
-   ```bash
-   cd server
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up your environment variables. Copy `.env.example` to `.env` and fill in your values.
-4. Run database migrations:
-   ```bash
-   npx prisma migrate dev
-   ```
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
+- Node.js
+- PostgreSQL
 
-### Frontend Setup
-1. Navigate to the client directory:
-   ```bash
-   cd client
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables (if any) in `.env.local`.
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+Create the server environment file and set a PostgreSQL connection string plus a JWT secret of at least 16 characters:
 
-## 🤝 Features
-- **Authentication:** Secure login with JWT and LinkedIn OAuth.
-- **Referral Pipeline:** Track referrals through various stages.
-- **Appointments:** Schedule and manage appointments.
-- **Real-time Chat:** Instant messaging using Socket.IO.
-- **AI Integration:** Leverage AI for document parsing and embeddings.
-- **Email Notifications:** Automated email updates and alerts.
+~~~bash
+cp server/.env.example server/.env
+~~~
 
-## 📄 License
-ISC
+Install the server packages, generate Prisma Client, apply the checked-in migration, then start the API:
+
+~~~bash
+cd server
+npm install
+npx prisma generate
+npx prisma migrate dev
+npm run dev
+~~~
+
+The API listens on http://localhost:4000 by default.
+
+In another terminal, start the web app:
+
+~~~bash
+cd client
+npm install
+npm run dev
+~~~
+
+The client uses http://localhost:4000/api by default. Set NEXT_PUBLIC_API_URL in client/.env.local if your API runs elsewhere.
+
+## Build commands
+
+~~~bash
+cd server
+npm run build
+~~~
+
+~~~bash
+cd client
+npm run build
+npm run lint
+~~~
+
+The server package’s test script is currently a placeholder; there is no configured automated test suite.
+
+## Security and deployment status
+
+**Do not deploy this version with real users or private messages yet.** The HTTP endpoints use JWT middleware, but the Socket.IO server currently accepts connections without authenticating the handshake and trusts client-supplied room/user IDs when joining rooms or broadcasting events. Add socket authentication and authorization before making the service public.
+
+The repository provides source code for a prototype. It does not include a production deployment configuration.
